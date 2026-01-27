@@ -10,4 +10,4 @@
             </div>
         </div>
     </div>
-</footer><?php /**PATH F:\Personal Projects\Vacay Guider\vacay-admin\resources\views/layouts/partials/footer.blade.php ENDPATH**/ ?>
+</footer><?php /**PATH F:\Personal Projects\Upswep\upswep\resources\views/layouts/partials/footer.blade.php ENDPATH**/ ?>

@@ -78,4 +78,4 @@
         </ul>
     </div>
 </div>
-<?php /**PATH F:\Personal Projects\Vacay Guider\vacay-admin\resources\views/layouts/partials/sidebar.blade.php ENDPATH**/ ?>
+<?php /**PATH F:\Personal Projects\Upswep\upswep\resources\views/layouts/partials/sidebar.blade.php ENDPATH**/ ?>

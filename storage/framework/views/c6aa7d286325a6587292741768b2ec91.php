@@ -7,4 +7,4 @@
 
 <?php echo app('Illuminate\Foundation\Vite')([ 'resources/scss/icons.scss', 'resources/scss/style.scss']); ?>
 
-<?php echo app('Illuminate\Foundation\Vite')([ 'resources/js/config.js']); ?><?php /**PATH F:\Personal Projects\Vacay Guider\vacay-admin\resources\views/layouts/partials/head-css.blade.php ENDPATH**/ ?>
+<?php echo app('Illuminate\Foundation\Vite')([ 'resources/js/config.js']); ?><?php /**PATH F:\Personal Projects\Upswep\upswep\resources\views/layouts/partials/head-css.blade.php ENDPATH**/ ?>

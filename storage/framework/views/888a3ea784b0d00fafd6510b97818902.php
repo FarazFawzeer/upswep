@@ -15,4 +15,4 @@
 
 </body>
 
-</html><?php /**PATH F:\Personal Projects\Vacay Guider\vacay-admin\resources\views/layouts/base.blade.php ENDPATH**/ ?>
+</html><?php /**PATH F:\Personal Projects\Upswep\upswep\resources\views/layouts/base.blade.php ENDPATH**/ ?>
