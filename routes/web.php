@@ -6,6 +6,8 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Admin\CategoryController;
+
 
 require __DIR__ . '/auth.php';
 
@@ -23,6 +25,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
     //profile
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::post('/profile', [ProfileController::class, 'update'])->name('profile.update');
+
+       Route::resource('categories', CategoryController::class)->except(['show']);
 });
 
 
