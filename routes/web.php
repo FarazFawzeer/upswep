@@ -7,6 +7,9 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\StockEntryController;
+use App\Http\Controllers\Admin\SupplierController;
 
 
 require __DIR__ . '/auth.php';
@@ -26,7 +29,15 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::post('/profile', [ProfileController::class, 'update'])->name('profile.update');
 
-       Route::resource('categories', CategoryController::class)->except(['show']);
+    Route::resource('categories', CategoryController::class)->except(['show']);
+    Route::resource('products', ProductController::class);
+    Route::get('products/barcodes/print', [\App\Http\Controllers\Admin\ProductController::class, 'printBarcodes'])->name('products.barcodes.print');
+
+    Route::resource('stock-entries', StockEntryController::class)->except(['edit', 'update', 'destroy']);
+
+    Route::resource('suppliers', SupplierController::class);
+    Route::get('/stock-entries/{stock_entry}', [StockEntryController::class, 'show'])
+    ->name('stock-entries.show');
 });
 
 
