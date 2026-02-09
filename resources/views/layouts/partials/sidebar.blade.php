@@ -29,6 +29,15 @@
                          
                     </a>
                </li> --}}
+               <li class="nav-item">
+    <a class="nav-link" href="{{ route('pos.index') }}">
+        <span class="nav-icon">
+            <iconify-icon icon="solar:cash-out-outline"></iconify-icon>
+        </span>
+        <span class="nav-text"> POS </span>
+    </a>
+</li>
+
 
             <li class="nav-item">
                 <a class="nav-link menu-arrow" href="#sidebarAdmin" data-bs-toggle="collapse" role="button"
@@ -134,7 +143,7 @@
                 </div>
             </li>
 
-            <li class="nav-item">
+            {{-- <li class="nav-item">
                 <a class="nav-link menu-arrow" href="#sidebarStockEntries" data-bs-toggle="collapse" role="button"
                     aria-expanded="false" aria-controls="sidebarStockEntries">
                     <span class="nav-icon">
@@ -152,7 +161,68 @@
                         </li>
                     </ul>
                 </div>
+            </li> --}}
+
+            <li class="nav-item">
+                <a class="nav-link menu-arrow" href="#sidebarStock" data-bs-toggle="collapse" role="button"
+                    aria-expanded="false" aria-controls="sidebarStock">
+                    <span class="nav-icon">
+                        <iconify-icon icon="solar:box-outline"></iconify-icon>
+                    </span>
+                    <span class="nav-text"> Stock</span>
+                </a>
+                <div class="collapse" id="sidebarStock">
+                    <ul class="nav sub-navbar-nav">
+                        <li class="sub-nav-item">
+                            <a class="sub-nav-link" href="{{ route('admin.stock-entries.create') }}">Create</a>
+                        </li>
+                        <li class="sub-nav-item">
+                            <a class="sub-nav-link" href="{{ route('admin.stock-entries.index') }}">Stock Entries</a>
+                        </li>
+                        <li class="sub-nav-item">
+                            <a class="sub-nav-link"
+                                href="{{ route('admin.stock-adjustments.create') }}">Adjustments</a>
+                        </li>
+                        <li class="sub-nav-item">
+                            <a class="sub-nav-link" href="{{ route('admin.stock-movements.index') }}">Stock
+                                History</a>
+                        </li>
+                    </ul>
+                </div>
             </li>
+   <li class="nav-item">
+    <a class="nav-link menu-arrow" href="#sidebarReports"
+       data-bs-toggle="collapse"
+       role="button"
+       aria-expanded="false"
+       aria-controls="sidebarReports">
+
+        <span class="nav-icon">
+            <iconify-icon icon="solar:chart-square-outline"></iconify-icon>
+        </span>
+        <span class="nav-text"> Reports </span>
+    </a>
+
+    <div class="collapse" id="sidebarReports">
+        <ul class="nav sub-navbar-nav">
+
+            <li class="sub-nav-item">
+                <a class="sub-nav-link" href="{{ route('admin.reports.low-stock') }}">
+                    Low Stock
+                </a>
+            </li>
+
+            {{-- Future reports --}}
+            {{--
+            <li class="sub-nav-item">
+                <a class="sub-nav-link" href="#">
+                    Sales Report
+                </a>
+            </li>
+            --}}
+        </ul>
+    </div>
+</li>
 
 
             <li class="nav-item">
@@ -164,6 +234,7 @@
 
                 </a>
             </li>
+
 
             {{-- <li class="nav-item">
                     <a class="nav-link menu-arrow" href="#sidebarAuthentication" data-bs-toggle="collapse" role="button"

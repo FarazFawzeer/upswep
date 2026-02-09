@@ -10,6 +10,11 @@ use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\StockEntryController;
 use App\Http\Controllers\Admin\SupplierController;
+use App\Http\Controllers\Admin\StockAdjustmentController;
+use App\Http\Controllers\Admin\StockMovementController;
+use App\Http\Controllers\Admin\ReportController;
+use App\Http\Controllers\POS\PosController;
+use App\Http\Controllers\POS\PosInvoiceController;
 
 
 require __DIR__ . '/auth.php';
@@ -37,10 +42,34 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
     Route::resource('suppliers', SupplierController::class);
     Route::get('/stock-entries/{stock_entry}', [StockEntryController::class, 'show'])
-    ->name('stock-entries.show');
+        ->name('stock-entries.show');
+
+    // Stock Adjustments
+    Route::get('stock-adjustments/create', [StockAdjustmentController::class, 'create'])
+        ->name('stock-adjustments.create');
+
+    Route::post('stock-adjustments', [StockAdjustmentController::class, 'store'])
+        ->name('stock-adjustments.store');
+
+    Route::get('stock-movements', [StockMovementController::class, 'index'])
+        ->name('stock-movements.index');
+
+    Route::get('reports/low-stock', [ReportController::class, 'lowStock'])
+        ->name('reports.low-stock');
 });
 
 
+Route::middleware(['auth'])->group(function () {
+    Route::get('/pos', [PosController::class, 'index'])->name('pos.index');
+    Route::get('/pos/product-by-barcode', [PosController::class, 'productByBarcode'])->name('pos.productByBarcode');
+    Route::get('/pos/search-products', [PosController::class, 'searchProducts'])->name('pos.searchProducts');
+    Route::post('/pos/complete', [PosController::class, 'storeSale'])->name('pos.storeSale');
+
+
+        Route::get('/pos/invoice/{sale}', [PosInvoiceController::class, 'show'])->name('pos.invoice.show');         // A4 HTML
+    Route::get('/pos/invoice/{sale}/thermal', [PosInvoiceController::class, 'thermal'])->name('pos.invoice.thermal'); // 80mm
+    Route::get('/pos/invoice/{sale}/pdf', [PosInvoiceController::class, 'pdf'])->name('pos.invoice.pdf');      // A4 PDF
+});
 
 Route::group(['prefix' => '/', 'middleware' => 'auth'], function () {
     Route::get('', [RoutingController::class, 'index'])->name('root');

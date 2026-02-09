@@ -15,9 +15,11 @@ class Sale extends Model
         'customer_id',
         'sub_total',
         'discount_total',
+        'tax_percent',
         'tax_total',
         'grand_total',
         'payment_method',
+        'status',
         'created_by',
     ];
 
@@ -37,6 +39,11 @@ class Sale extends Model
     public function customer()
     {
         return $this->belongsTo(Customer::class);
+    }
+
+    public function cashier()
+    {
+        return $this->belongsTo(User::class, 'created_by');
     }
 
     public function createdBy()
