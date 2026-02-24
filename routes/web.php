@@ -56,6 +56,20 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
     Route::get('reports/low-stock', [ReportController::class, 'lowStock'])
         ->name('reports.low-stock');
+
+    Route::prefix('reports')->name('reports.')->group(function () {
+        Route::get('/sales-daily', [ReportController::class, 'dailySales'])->name('sales.daily');
+        Route::get('/sales-summary', [ReportController::class, 'salesSummary'])->name('sales.summary'); // weekly/monthly
+        Route::get('/sales-by-cashier', [ReportController::class, 'salesByCashier'])->name('sales.byCashier');
+        Route::get('/best-selling-products', [ReportController::class, 'bestSellingProducts'])->name('sales.bestProducts');
+    });
+
+    Route::get('/profit-report', [\App\Http\Controllers\Admin\ReportController::class, 'profitReport'])
+        ->name('reports.profit');
+
+    Route::get('/stock-summary', [ReportController::class, 'stockSummary'])->name('stock-summary');
+    Route::get('/out-of-stock', [ReportController::class, 'out-of-stock'])->name('out-of-stock');
+    Route::get('/stock-movements', [ReportController::class, 'stockMovements'])->name('stock-movements');
 });
 
 
@@ -66,7 +80,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/pos/complete', [PosController::class, 'storeSale'])->name('pos.storeSale');
 
 
-        Route::get('/pos/invoice/{sale}', [PosInvoiceController::class, 'show'])->name('pos.invoice.show');         // A4 HTML
+    Route::get('/pos/invoice/{sale}', [PosInvoiceController::class, 'show'])->name('pos.invoice.show');         // A4 HTML
     Route::get('/pos/invoice/{sale}/thermal', [PosInvoiceController::class, 'thermal'])->name('pos.invoice.thermal'); // 80mm
     Route::get('/pos/invoice/{sale}/pdf', [PosInvoiceController::class, 'pdf'])->name('pos.invoice.pdf');      // A4 PDF
 });

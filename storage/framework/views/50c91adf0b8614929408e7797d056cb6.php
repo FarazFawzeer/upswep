@@ -19,14 +19,14 @@
             <li class="menu-title">Menu...</li>
 
             
-               <li class="nav-item">
-    <a class="nav-link" href="<?php echo e(route('pos.index')); ?>">
-        <span class="nav-icon">
-            <iconify-icon icon="solar:cash-out-outline"></iconify-icon>
-        </span>
-        <span class="nav-text"> POS </span>
-    </a>
-</li>
+            <li class="nav-item">
+                <a class="nav-link" href="<?php echo e(route('pos.index')); ?>">
+                    <span class="nav-icon">
+                        <iconify-icon icon="solar:cash-out-outline"></iconify-icon>
+                    </span>
+                    <span class="nav-text"> POS </span>
+                </a>
+            </li>
 
 
             <li class="nav-item">
@@ -162,33 +162,65 @@
                     </ul>
                 </div>
             </li>
-   <li class="nav-item">
-    <a class="nav-link menu-arrow" href="#sidebarReports"
-       data-bs-toggle="collapse"
-       role="button"
-       aria-expanded="false"
-       aria-controls="sidebarReports">
+            <li class="nav-item">
+                <a class="nav-link menu-arrow" href="#sidebarReports" data-bs-toggle="collapse" role="button"
+                    aria-expanded="false" aria-controls="sidebarReports">
 
-        <span class="nav-icon">
-            <iconify-icon icon="solar:chart-square-outline"></iconify-icon>
-        </span>
-        <span class="nav-text"> Reports </span>
-    </a>
-
-    <div class="collapse" id="sidebarReports">
-        <ul class="nav sub-navbar-nav">
-
-            <li class="sub-nav-item">
-                <a class="sub-nav-link" href="<?php echo e(route('admin.reports.low-stock')); ?>">
-                    Low Stock
+                    <span class="nav-icon">
+                        <iconify-icon icon="solar:chart-square-outline"></iconify-icon>
+                    </span>
+                    <span class="nav-text"> Reports </span>
                 </a>
-            </li>
 
-            
-            
-        </ul>
-    </div>
-</li>
+                <div class="collapse" id="sidebarReports">
+                    <ul class="nav sub-navbar-nav">
+
+                        <li class="sub-nav-item">
+                            <a class="sub-nav-link" href="<?php echo e(route('admin.reports.low-stock')); ?>">
+                                Low Stock
+                            </a>
+                        </li>
+
+                        <li class="sub-nav-item">
+                            <a class="sub-nav-link" href="<?php echo e(route('admin.reports.sales.daily')); ?>">Daily Sales</a>
+                        </li>
+                        <li class="sub-nav-item">
+                            <a class="sub-nav-link" href="<?php echo e(route('admin.reports.sales.summary')); ?>">Weekly /
+                                Monthly</a>
+                        </li>
+                        <li class="sub-nav-item">
+                            <a class="sub-nav-link" href="<?php echo e(route('admin.reports.sales.byCashier')); ?>">Sales by
+                                Cashier</a>
+                        </li>
+                        <li class="sub-nav-item">
+                            <a class="sub-nav-link" href="<?php echo e(route('admin.reports.sales.bestProducts')); ?>">Best
+                                Selling Products</a>
+                        </li>
+
+                        
+                        <li class="sub-nav-item">
+                            <a class="sub-nav-link" href="<?php echo e(route('admin.reports.low-stock')); ?>">Low Stock</a>
+                        </li>
+
+                        <li class="sub-nav-item">
+                            <a class="sub-nav-link" href="<?php echo e(route('admin.reports.profit')); ?>">Profit Report</a>
+                        </li>
+
+                        <li class="sub-nav-item">
+                            <a class="sub-nav-link" href="<?php echo e(route('admin.reports.stock-summary')); ?>">Stock
+                                Summary</a>
+                        </li>
+
+                        <li class="sub-nav-item">
+                            <a class="sub-nav-link" href="<?php echo e(route('admin.reports.out-of-stock')); ?>">Out of Stock</a>
+                        </li>
+                        <li class="sub-nav-item">
+                            <a class="sub-nav-link" href="<?php echo e(route('admin.reports.stock-movements')); ?>">Stock
+                                Movements</a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
 
 
             <li class="nav-item">
