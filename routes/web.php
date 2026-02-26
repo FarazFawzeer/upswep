@@ -15,6 +15,10 @@ use App\Http\Controllers\Admin\StockMovementController;
 use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\POS\PosController;
 use App\Http\Controllers\POS\PosInvoiceController;
+use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\ReportExportController;
+
+  
 
 
 require __DIR__ . '/auth.php';
@@ -51,7 +55,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::post('stock-adjustments', [StockAdjustmentController::class, 'store'])
         ->name('stock-adjustments.store');
 
-    Route::get('stock-movements', [StockMovementController::class, 'index'])
+    Route::get('stock-movements/move', [StockMovementController::class, 'index'])
         ->name('stock-movements.index');
 
     Route::get('reports/low-stock', [ReportController::class, 'lowStock'])
@@ -62,14 +66,32 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/sales-summary', [ReportController::class, 'salesSummary'])->name('sales.summary'); // weekly/monthly
         Route::get('/sales-by-cashier', [ReportController::class, 'salesByCashier'])->name('sales.byCashier');
         Route::get('/best-selling-products', [ReportController::class, 'bestSellingProducts'])->name('sales.bestProducts');
+        Route::get('/stock-summary', [ReportController::class, 'stockSummary'])->name('stock-summary');
+        Route::get('/out-of-stock', [ReportController::class, 'out-of-stock'])->name('out-of-stock');
+        Route::get('/stock-movements', [ReportController::class, 'stockMovements'])->name('stock-movements');
+
+                // Stock Summary
+        Route::get('/stock-summary/export/pdf', [ReportExportController::class, 'stockSummaryPdf'])->name('stock-summary.export.pdf');
+        Route::get('/stock-summary/export/excel', [ReportExportController::class, 'stockSummaryExcel'])->name('stock-summary.export.excel');
+
+        // Low Stock
+        Route::get('/low-stock/export/pdf', [ReportExportController::class, 'lowStockPdf'])->name('low-stock.export.pdf');
+        Route::get('/low-stock/export/excel', [ReportExportController::class, 'lowStockExcel'])->name('low-stock.export.excel');
+
+        // Out of Stock
+        Route::get('/out-of-stock/export/pdf', [ReportExportController::class, 'outOfStockPdf'])->name('out-of-stock.export.pdf');
+        Route::get('/out-of-stock/export/excel', [ReportExportController::class, 'outOfStockExcel'])->name('out-of-stock.export.excel');
+
+        // Stock Movements
+        Route::get('/stock-movements/export/pdf', [ReportExportController::class, 'stockMovementsPdf'])->name('stock-movements.export.pdf');
+        Route::get('/stock-movements/export/excel', [ReportExportController::class, 'stockMovementsExcel'])->name('stock-movements.export.excel');
+
+
+
     });
 
     Route::get('/profit-report', [\App\Http\Controllers\Admin\ReportController::class, 'profitReport'])
         ->name('reports.profit');
-
-    Route::get('/stock-summary', [ReportController::class, 'stockSummary'])->name('stock-summary');
-    Route::get('/out-of-stock', [ReportController::class, 'out-of-stock'])->name('out-of-stock');
-    Route::get('/stock-movements', [ReportController::class, 'stockMovements'])->name('stock-movements');
 });
 
 
@@ -104,8 +126,12 @@ Route::post('/login', [LoginController::class, 'login'])->name('login.post');
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
 
-Route::middleware('auth')->group(function () {
-    Route::get('/', function () {
-        return view('index'); // create resources/views/dashboard.blade.php
-    });
-});
+
+        Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+        
+// Route::middleware('auth')->group(function () {
+//     Route::get('/', function () {
+//         return view('index'); // create resources/views/dashboard.blade.php
+//     });
+// });
+

@@ -14,10 +14,10 @@
                             <div class="text-center">
                                 <div class="mx-auto mb-4 text-center auth-logo">
                                     <a href="#" class="logo-dark">
-                                        <img src="/images/vacayguider.png" height="100" width="200" alt="logo dark">
+                                        <img src="/images/upsswep.png"  height="150" width="200"" alt="logo dark">
                                     </a>
                                     <a href="#" class="logo-light">
-                                        <img src="/images/vacayguider.png" height="50" alt="logo light">
+                                        <img src="/images/upsswep.png" height="250"  width="250"alt="logo light">
                                     </a>
                                 </div>
 

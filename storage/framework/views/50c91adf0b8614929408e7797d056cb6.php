@@ -1,15 +1,10 @@
 <div class="app-sidebar">
     <!-- Sidebar Logo -->
     <div class="logo-box">
-        <a href="<?php echo e(route('any', 'index')); ?>" class="logo-dark">
-            <img src="/images/vacayguider.png" class="logo-sm" alt="logo sm">
-            <img src="/images/vacayguider.png" class="logo-lg" alt="logo dark" style="width: 150px; height: 75px;">
-        </a>
-
-        <a href="<?php echo e(route('any', 'index')); ?>" class="logo-light">
-            <img src="/images/vacayguider.png" class="logo-sm" alt="logo sm">
-            <img src="/images/vacayguider.png" class="logo-lg" alt="logo light" style="width: 150px; height: 75px;">
-        </a>
+  <a href="<?php echo e(route('dashboard')); ?>" class="text-decoration-none">
+    <h1 class="text-center text-black mt-3 mb-0">UPSWEP</h1>
+</a>
+        
     </div>
 
     <div class="scrollbar" data-simplebar>
