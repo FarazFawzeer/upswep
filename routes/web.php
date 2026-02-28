@@ -4,7 +4,7 @@ use App\Http\Controllers\RoutingController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Admin\UserController;
-use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\Admin\CustomerController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\ProductController;
@@ -18,7 +18,7 @@ use App\Http\Controllers\POS\PosInvoiceController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ReportExportController;
 
-  
+
 
 
 require __DIR__ . '/auth.php';
@@ -29,10 +29,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::resource('users', UserController::class);
 
     //customer
-    Route::get('customers', [CustomerController::class, 'index'])->name('customers.index');
-    Route::get('customers/create', [CustomerController::class, 'create'])->name('customers.create');
-    Route::post('customers', [CustomerController::class, 'store'])->name('customers.store');
-    Route::delete('customers/{customer}', [CustomerController::class, 'destroy'])->name('customers.destroy'); // Delete customer
+  Route::resource('customers', CustomerController::class)->except(['show']);
+    Route::get('customers/{customer}/history', [CustomerController::class, 'history'])->name('customers.history');
 
     //profile
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -70,7 +68,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/out-of-stock', [ReportController::class, 'out-of-stock'])->name('out-of-stock');
         Route::get('/stock-movements', [ReportController::class, 'stockMovements'])->name('stock-movements');
 
-                // Stock Summary
+        // Stock Summary
         Route::get('/stock-summary/export/pdf', [ReportExportController::class, 'stockSummaryPdf'])->name('stock-summary.export.pdf');
         Route::get('/stock-summary/export/excel', [ReportExportController::class, 'stockSummaryExcel'])->name('stock-summary.export.excel');
 
@@ -85,13 +83,15 @@ Route::prefix('admin')->name('admin.')->group(function () {
         // Stock Movements
         Route::get('/stock-movements/export/pdf', [ReportExportController::class, 'stockMovementsPdf'])->name('stock-movements.export.pdf');
         Route::get('/stock-movements/export/excel', [ReportExportController::class, 'stockMovementsExcel'])->name('stock-movements.export.excel');
-
-
-
     });
 
     Route::get('/profit-report', [\App\Http\Controllers\Admin\ReportController::class, 'profitReport'])
         ->name('reports.profit');
+
+
+    Route::resource('suppliers', SupplierController::class)->except(['show']);
+
+    Route::resource('stock-entries', StockEntryController::class);
 });
 
 
@@ -100,6 +100,12 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/pos/product-by-barcode', [PosController::class, 'productByBarcode'])->name('pos.productByBarcode');
     Route::get('/pos/search-products', [PosController::class, 'searchProducts'])->name('pos.searchProducts');
     Route::post('/pos/complete', [PosController::class, 'storeSale'])->name('pos.storeSale');
+
+     Route::get('customers/search', [\App\Http\Controllers\POS\PosController::class, 'searchCustomers'])
+        ->name('customers.search');
+
+    Route::post('customers/quick-store', [\App\Http\Controllers\POS\PosController::class, 'quickStoreCustomer'])
+        ->name('customers.quickStore');
 
 
     Route::get('/pos/invoice/{sale}', [PosInvoiceController::class, 'show'])->name('pos.invoice.show');         // A4 HTML
@@ -125,13 +131,14 @@ Route::post('/login', [LoginController::class, 'login'])->name('login.post');
 // Logout
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
+Route::middleware('auth')->group(function () {
 
 
-        Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
-        
+    Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+});
+
 // Route::middleware('auth')->group(function () {
 //     Route::get('/', function () {
 //         return view('index'); // create resources/views/dashboard.blade.php
 //     });
-// });
-
+// 

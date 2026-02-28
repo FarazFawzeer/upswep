@@ -9,6 +9,7 @@ use App\Models\SaleItem;
 use App\Models\StockMovement;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Models\Customer;
 
 
 class PosController extends Controller
@@ -217,4 +218,70 @@ class PosController extends Controller
             'total'      => number_format($result['grand_total'], 2),
         ]);
     }
+
+    public function searchCustomers(Request $request)
+{
+    $q = trim((string) $request->get('q'));
+
+    $customers = Customer::query()
+        ->when($q, function ($query) use ($q) {
+            $query->where('name', 'like', "%{$q}%")
+                ->orWhere('contact', 'like', "%{$q}%")
+                ->orWhere('whatsapp_number', 'like', "%{$q}%")
+                ->orWhere('customer_code', 'like', "%{$q}%");
+        })
+        ->latest()
+        ->limit(20)
+        ->get([
+            'id',
+            'name',
+            'customer_code',
+            'contact',
+            'whatsapp_number',
+        ]);
+
+    return response()->json([
+        'success' => true,
+        'customers' => $customers
+    ]);
+}
+
+public function quickStoreCustomer(Request $request)
+{
+    $validated = $request->validate([
+        'name' => ['required', 'string', 'max:255'],
+        'phone' => ['nullable', 'string', 'max:20'],
+    ]);
+
+    // minimal create (no type/address required)
+    $data = [
+        'name' => $validated['name'],
+        'contact' => $validated['phone'] ?? null,
+        'type' => 'Individual',        // default
+        'address' => 'N/A',            // default if your DB requires
+        'portal' => 'POS',
+        'date_of_entry' => now(),
+    ];
+
+    // generate customer_code same style
+    $last = Customer::orderByDesc('id')->first();
+    $lastNumber = ($last && $last->customer_code)
+        ? (int) filter_var($last->customer_code, FILTER_SANITIZE_NUMBER_INT)
+        : 0;
+
+    $data['customer_code'] = 'VG' . str_pad($lastNumber + 1, 3, '0', STR_PAD_LEFT);
+
+    $customer = Customer::create($data);
+
+    return response()->json([
+        'success' => true,
+        'message' => 'Customer added successfully.',
+        'customer' => [
+            'id' => $customer->id,
+            'name' => $customer->name,
+            'customer_code' => $customer->customer_code,
+            'phone' => $customer->contact,
+        ]
+    ]);
+}
 }

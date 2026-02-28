@@ -74,7 +74,7 @@
                 <div class="collapse" id="sidebarCustomer">
                     <ul class="nav sub-navbar-nav">
                         <li class="sub-nav-item">
-                            <a class="sub-nav-link" href="{{ route('second', ['customer', 'create']) }}">Create</a>
+                            <a class="sub-nav-link" href="{{ route('admin.customers.create') }}">Create</a>
                         </li>
                         <li class="sub-nav-item">
                             <a class="sub-nav-link" href="{{ route('admin.customers.index') }}">View </a>

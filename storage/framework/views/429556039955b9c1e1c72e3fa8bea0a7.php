@@ -134,12 +134,31 @@
                         </div>
                     </div>
 
+                    <div class="mb-3">
+                        <label class="form-label mb-1">Customer (optional)</label>
+
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="customerSearchInput"
+                                placeholder="Search customer name / phone / code...">
+                            <button class="btn btn-outline-primary" type="button" id="quickAddCustomerBtn"
+                                title="Quick Add">
+                                <iconify-icon icon="solar:user-plus-outline"></iconify-icon>
+                            </button>
+                        </div>
+
+                        <div class="list-group position-relative shadow-sm mt-1 d-none" id="customerResults"
+                            style="z-index: 999;"></div>
+
+                        <input type="hidden" id="selectedCustomerId" value="">
+                        <small class="text-muted d-block mt-1" id="selectedCustomerText">Walk-in Customer</small>
+                    </div>
+
                     <button class="btn btn-primary w-100" id="completeBtn" disabled>
                         <iconify-icon icon="solar:card-send-outline"></iconify-icon>
                         Complete Sale
                     </button>
 
-                   
+
                 </div>
             </div>
         </div>
@@ -148,6 +167,136 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+
+            const customerSearchInput = document.getElementById('customerSearchInput');
+            const customerResults = document.getElementById('customerResults');
+            const selectedCustomerId = document.getElementById('selectedCustomerId');
+            const selectedCustomerText = document.getElementById('selectedCustomerText');
+            const quickAddCustomerBtn = document.getElementById('quickAddCustomerBtn');
+
+            let customerTimer = null;
+
+            function hideCustomerResults() {
+                customerResults.classList.add('d-none');
+                customerResults.innerHTML = '';
+            }
+
+            function setSelectedCustomer(c) {
+                selectedCustomerId.value = c ? c.id : '';
+                selectedCustomerText.textContent = c ?
+                    `${c.name} (${c.customer_code || '—'}) - ${c.contact || c.whatsapp_number || '—'}` :
+                    'Walk-in Customer';
+            }
+
+            async function searchCustomers(q) {
+                const url = `<?php echo e(route('customers.search')); ?>?q=${encodeURIComponent(q)}`;
+                const res = await fetch(url, {
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+                const data = await res.json();
+                return data.customers || [];
+            }
+
+            function showCustomerResults(items) {
+                if (!items.length) return hideCustomerResults();
+
+                customerResults.innerHTML = items.map(c => `
+        <button type="button"
+            class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
+            data-customer='${JSON.stringify(c).replace(/'/g, "&apos;")}'>
+            <div>
+                <div class="fw-semibold">${c.name}</div>
+                <small class="text-muted">${c.customer_code || '—'} | ${c.contact || c.whatsapp_number || '—'}</small>
+            </div>
+        </button>
+    `).join('');
+
+                customerResults.classList.remove('d-none');
+            }
+
+            // typing search (debounced)
+            customerSearchInput?.addEventListener('input', function() {
+                const q = this.value.trim();
+                clearTimeout(customerTimer);
+
+                if (q.length < 2) {
+                    hideCustomerResults();
+                    return;
+                }
+
+                customerTimer = setTimeout(async () => {
+                    const list = await searchCustomers(q);
+                    showCustomerResults(list);
+                }, 250);
+            });
+
+            // click select
+            customerResults?.addEventListener('click', function(e) {
+                const btn = e.target.closest('.list-group-item');
+                if (!btn) return;
+
+                const c = JSON.parse(btn.getAttribute('data-customer'));
+                setSelectedCustomer(c);
+
+                customerSearchInput.value = '';
+                hideCustomerResults();
+            });
+
+            // click outside
+            document.addEventListener('click', function(e) {
+                if (!e.target.closest('#customerResults') && !e.target.closest('#customerSearchInput')) {
+                    hideCustomerResults();
+                }
+            });
+
+            // quick add
+            quickAddCustomerBtn?.addEventListener('click', async function() {
+                const {
+                    value: formValues
+                } = await Swal.fire({
+                    title: 'Quick Add Customer',
+                    html: `<input id="swalCusName" class="swal2-input" placeholder="Customer name">
+           <input id="swalCusPhone" class="swal2-input" placeholder="Phone (optional)">`,
+                    focusConfirm: false,
+                    showCancelButton: true,
+                    confirmButtonText: 'Save',
+                    preConfirm: () => ({
+                        name: document.getElementById('swalCusName').value,
+                        phone: document.getElementById('swalCusPhone').value,
+                    })
+                });
+
+                if (!formValues) return;
+
+                const res = await fetch(`<?php echo e(route('customers.quickStore')); ?>`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Accept": "application/json",
+                        "X-CSRF-TOKEN": "<?php echo e(csrf_token()); ?>"
+                    },
+                    body: JSON.stringify(formValues)
+                });
+
+                const data = await res.json();
+
+                if (!res.ok || !data.success) {
+                    Swal.fire('Error', data.message || 'Failed to add customer', 'error');
+                    return;
+                }
+
+                Swal.fire('Saved', data.message, 'success');
+
+                setSelectedCustomer({
+                    id: data.customer.id,
+                    name: data.customer.name,
+                    customer_code: data.customer.customer_code,
+                    contact: data.customer.phone
+                });
+            });
+
 
             const productSearchInput = document.getElementById('productSearchInput');
             const searchResults = document.getElementById('searchResults');
@@ -519,7 +668,7 @@
                     discount_total: parseFloat(discountInput.value || 0), // ✅ match DB column
                     tax_percent: parseFloat(taxInput.value || 0),
                     payment_method: 'cash', // later you can add dropdown
-                    customer_id: null // later you can add customer select
+                   customer_id: selectedCustomerId.value ? parseInt(selectedCustomerId.value) : null
                 };
 
                 try {
@@ -542,43 +691,44 @@
                     }
 
                     // ✅ Clear cart immediately (recommended)
-cart = {};
-discountInput.value = 0;
-taxInput.value = 0;
-renderCart();
-focusBarcode();
+                    cart = {};
+                    discountInput.value = 0;
+                    taxInput.value = 0;
+                    renderCart();
+                    focusBarcode();
 
-// ✅ SweetAlert options
-Swal.fire({
-    title: 'Sale Completed!',
-    html: `
+                    // ✅ SweetAlert options
+                    Swal.fire({
+                        title: 'Sale Completed!',
+                        html: `
         <div class="text-muted">Invoice No: <strong>${data.invoice_no}</strong></div>
         <div class="text-muted mt-1">What do you want to do next?</div>
     `,
-    icon: 'success',
-    showCancelButton: true,
-    showDenyButton: true,
+                        icon: 'success',
+                        showCancelButton: true,
+                        showDenyButton: true,
 
-    confirmButtonText: 'Print Thermal',
-    denyButtonText: 'Open Invoice',
-    cancelButtonText: 'Close',
+                        confirmButtonText: 'Print Thermal',
+                        denyButtonText: 'Open Invoice',
+                        cancelButtonText: 'Close',
 
-    confirmButtonColor: '#0d6efd',
-    denyButtonColor: '#6c757d',
-    cancelButtonColor: '#adb5bd'
-}).then((result) => {
+                        confirmButtonColor: '#0d6efd',
+                        denyButtonColor: '#6c757d',
+                        cancelButtonColor: '#adb5bd'
+                    }).then((result) => {
 
-    if (result.isConfirmed) {
-        // ✅ Thermal 80mm (auto print)
-        window.open(`<?php echo e(url('/pos/invoice')); ?>/${data.sale_id}/thermal`, "_blank");
-    } else if (result.isDenied) {
-        // ✅ Normal A4 Invoice page
-        window.open(`<?php echo e(url('/pos/invoice')); ?>/${data.sale_id}`, "_blank");
-    }
+                        if (result.isConfirmed) {
+                            // ✅ Thermal 80mm (auto print)
+                            window.open(`<?php echo e(url('/pos/invoice')); ?>/${data.sale_id}/thermal`,
+                                "_blank");
+                        } else if (result.isDenied) {
+                            // ✅ Normal A4 Invoice page
+                            window.open(`<?php echo e(url('/pos/invoice')); ?>/${data.sale_id}`, "_blank");
+                        }
 
-    // always refocus barcode after closing
-    focusBarcode();
-});
+                        // always refocus barcode after closing
+                        focusBarcode();
+                    });
 
 
                     // showMsg('success', `Sale completed. Invoice: ${data.invoice_no}`);
